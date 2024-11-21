@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { HiMenuAlt2 } from "react-icons/hi"
 import { IoClose } from "react-icons/io5"
 import SimpleBar from "simplebar-react"
@@ -20,7 +20,7 @@ interface SidebarProps {
 
 export default function Sidebar({ albums }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
+
   const pathname = usePathname()
 
   const toggleSidebar = () => setIsOpen(!isOpen)

@@ -2,12 +2,49 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { allAlbums } from "@/app/data/albums"
+import { Metadata } from "next"
 
-export default function AlbumPage({ params }: { params: { id: string } }) {
-  const album = allAlbums.find((a) => a.id === params.id)
+type Params = Promise<{ id: string }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
+interface GenerateMetadataProps {
+  params: Params
+  searchParams: SearchParams
+}
+
+export async function generateMetadata({
+  params,
+}: GenerateMetadataProps): Promise<Metadata> {
+  const resolvedParams = await params
+  const album = allAlbums.find((a) => a.id === resolvedParams.id)
+
+  return {
+    title: album ? `${album.title} | Photo Album` : "Album Not Found",
+    description: album?.description || "Album not found",
+  }
+}
+
+interface PageProps {
+  params: Params
+  searchParams: SearchParams
+}
+
+export default async function AlbumPage({ params }: PageProps) {
+  const resolvedParams = await params
+  const album = allAlbums.find((a) => a.id === resolvedParams.id)
 
   if (!album) {
-    return <div>Album not found</div>
+    return (
+      <div className="min-h-screen bg-neutral-900 p-8">
+        <Link
+          href="/"
+          className="text-white mb-8 inline-block hover:text-gray-300"
+        >
+          ← Back to Albums
+        </Link>
+        <h1 className="text-4xl font-bold text-white">Album not found</h1>
+      </div>
+    )
   }
 
   return (
